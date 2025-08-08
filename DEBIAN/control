@@ -4,5 +4,5 @@ Architecture: arm64
 Maintainer: Riley Hernandez <riley@caldo.tech>
 Section: misc
 Priority: optional
-Depends: libssl-dev, libphidget22
+Depends: libssl-dev, libphidget22, curl
 Description: This package installs Phidget22 libraries and sets up udev rules and symbolic links.

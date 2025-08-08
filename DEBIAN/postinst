@@ -1,19 +1,41 @@
 #!/bin/bash
 set -e
 
+BINARY_URL="https://github.com/rileyhernandez/big_brother/releases/download/v0.0.4/big-brother-arm64"
+INSTALL_PATH="/usr/local/bin/big-brother"
+SERVICE_USER="libra"
+
 case "$1" in
     configure)
-        # Create the symbolic link
-        # Use -f to be idempotent (it won't fail if link exists)
+        # Create a system user for the service to run as
+        if ! getent passwd "$SERVICE_USER" >/dev/null; then
+            echo "Creating system user '$SERVICE_USER'..."
+            adduser --system --no-create-home --group "$SERVICE_USER"
+        fi
+
+        # Download the binary. Requires 'curl' to be installed.
+        echo "Downloading big-brother binary..."
+        if ! curl -fL --progress-bar "$BINARY_URL" -o "$INSTALL_PATH"; then
+            echo "ERROR: Failed to download binary from $BINARY_URL" >&2
+            echo "Please check your network connection and ensure 'curl' is installed." >&2
+            exit 1
+        fi
+
+        # Make the binary executable
+        echo "Setting permissions for $INSTALL_PATH..."
+        chmod +x "$INSTALL_PATH"
+
+        # Create the symbolic link for libphidget22.
+        # Use -sf to be idempotent (it won't fail if link exists).
         echo "Creating symbolic link for libphidget22..."
         ln -sf /lib/aarch64-linux-gnu/libphidget22.so.0 /usr/lib/libphidget22.so
 
-        # Reload udev rules to apply the new file
+        # Reload udev rules to apply the new rule file
         echo "Reloading udev rules..."
         udevadm control --reload-rules
         udevadm trigger
 
-        # Reload systemd, enable and start the new service
+        # Reload systemd daemon, enable and start the new service
         if [ -d /run/systemd/system ]; then
             echo "Enabling and starting libra service..."
             systemctl daemon-reload

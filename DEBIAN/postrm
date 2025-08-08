@@ -1,11 +1,12 @@
 #!/bin/bash
 set -e
 
-# The `postrm` script can be called in different ways
-# $1 will be "remove" or "purge"
+INSTALL_PATH="/usr/local/bin/big-brother"
+SERVICE_USER="libra"
+
 case "$1" in
-    remove|purge)
-        # On remove or purge, disable the service if systemd is running
+    remove)
+        # On remove, disable the service and remove files created by postinst
         if [ -d /run/systemd/system ]; then
             echo "Disabling libra service..."
             systemctl disable libra.service >/dev/null 2>&1 || true
@@ -14,9 +15,30 @@ case "$1" in
         echo "Removing symbolic link for libphidget22..."
         rm -f /usr/lib/libphidget22.so
 
+        echo "Removing big-brother binary..."
+        rm -f "$INSTALL_PATH"
+
         echo "Reloading udev rules..."
         udevadm control --reload-rules
         udevadm trigger
+    ;;
+
+    purge)
+        # On purge, remove the system user created by postinst.
+        # This is called after 'remove' actions have already been performed.
+        if getent passwd "$SERVICE_USER" >/dev/null; then
+            echo "Removing system user '$SERVICE_USER'..."
+            deluser --system "$SERVICE_USER" >/dev/null 2>&1 || true
+        fi
+    ;;
+
+    upgrade|deconfigure|failed-upgrade|abort-install|abort-upgrade)
+        # No action needed for these cases.
+    ;;
+
+    *)
+        echo "postrm called with unknown argument '$1'" >&2
+        exit 1
     ;;
 esac
 

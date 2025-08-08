@@ -1,12 +1,17 @@
 [Unit]
 Description=Libra Process
 After=network.target
+Requires=network-online.target
 
 [Service]
-ExecStart=/home/pi-zero/big_brother/target/release/big-brother
+ExecStart=/usr/local/bin/big-brother
 Type=simple
+User=libra
+Group=libra
 Restart=always
 RestartSec=3
+# Harden service by making the root filesystem read-only
+ProtectSystem=full
 
 [Install]
 WantedBy=multi-user.target
