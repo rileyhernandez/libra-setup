@@ -1,0 +1,25 @@
+#!/bin/bash
+set -e
+
+case "$1" in
+    configure)
+        # Create the symbolic link
+        echo "Creating symbolic link for libphidget22..."
+        ln -s /lib/aarch64-linux-gnu/libphidget22.so.0 /usr/lib/libphidget22.so
+
+        # Reload udev rules to apply the new file
+        echo "Reloading udev rules..."
+        udevadm control --reload-rules
+        udevadm trigger
+    ;;
+
+    abort-upgrade|abort-remove|abort-deconfigure)
+    ;;
+
+    *)
+        echo "postinst called with unknown argument \`$1'" >&2
+        exit 1
+    ;;
+esac
+
+exit 0

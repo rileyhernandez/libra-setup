@@ -1,0 +1,29 @@
+#!/bin/bash
+set -e
+
+# The `postrm` script can be called in different ways
+# $1 will be "remove" or "purge"
+case "$1" in
+    remove)
+        # Actions for when the package is removed but not purged
+        # (i.e., config files might be left behind)
+        echo "Removing symbolic link for libphidget22..."
+        rm -f /usr/lib/libphidget22.so
+
+        echo "Reloading udev rules..."
+        udevadm control --reload-rules
+        udevadm trigger
+    ;;
+    purge)
+        # Actions for when the package and its config files are purged
+        # In this case, the actions are the same.
+        echo "Purging symbolic link for libphidget22..."
+        rm -f /usr/lib/libphidget22.so
+
+        echo "Reloading udev rules..."
+        udevadm control --reload-rules
+        udevadm trigger
+    ;;
+esac
+
+exit 0
