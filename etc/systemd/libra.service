@@ -1,0 +1,12 @@
+[Unit]
+Description=Libra Process
+After=network.target
+
+[Service]
+ExecStart=/home/pi-zero/big_brother/target/release/big-brother
+Type=simple
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

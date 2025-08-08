@@ -8,6 +8,7 @@ The `libra-setup` package simplifies the configuration of a Debian-based `arm64`
 1.  Setting correct device permissions via a `udev` rule.
 2.  Creating a required symbolic link for the `libphidget22` shared library.
 
+This package also installs and manages a systemd service to run a background application.
 This ensures that applications can seamlessly discover and communicate with Phidgets hardware without requiring root privileges or manual file system changes.
 
 ## Features
@@ -15,6 +16,7 @@ This ensures that applications can seamlessly discover and communicate with Phid
 -   **Automatic Udev Rule**: Installs a `udev` rule that grants non-root users read/write access to Phidgets USB devices.
 -   **Library Symlink**: Creates a symbolic link from the versioned `libphidget22.so.0` to the unversioned `libphidget22.so`, which is often required by applications.
 -   **Dependency Management**: Declares dependencies on `libphidget22` and `libssl-dev` for automatic installation.
+-   **Systemd Service**: Installs, enables, and starts a systemd service for a background process.
 -   **Clean Uninstallation**: Removes all created files and links when the package is uninstalled.
 -   **Architecture Specific**: Tailored for `arm64` (aarch64) systems.
 
@@ -66,6 +68,18 @@ ln -s /lib/aarch64-linux-gnu/libphidget22.so.0 /usr/lib/libphidget22.so
 ```
 
 The `libphidget22` package installs its shared library with a version number (`libphidget22.so.0`). However, applications are often linked against the unversioned name (`libphidget22.so`). This symbolic link ensures that the system's dynamic linker can find the library, allowing such applications to run correctly.
+
+### Systemd Service
+
+The package installs a systemd service file at `/etc/systemd/system/libra.service`. The `postinst` script then enables this service to start on boot and starts it immediately.
+
+The service is configured to run an application from a fixed path and restart it automatically if it fails.
+
+```
+[Service]
+ExecStart=/home/pi-zero/big_brother/target/release/big-brother
+Restart=always
+```
 
 ## Uninstallation
 

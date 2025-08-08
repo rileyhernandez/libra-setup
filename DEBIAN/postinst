@@ -4,13 +4,22 @@ set -e
 case "$1" in
     configure)
         # Create the symbolic link
+        # Use -f to be idempotent (it won't fail if link exists)
         echo "Creating symbolic link for libphidget22..."
-        ln -s /lib/aarch64-linux-gnu/libphidget22.so.0 /usr/lib/libphidget22.so
+        ln -sf /lib/aarch64-linux-gnu/libphidget22.so.0 /usr/lib/libphidget22.so
 
         # Reload udev rules to apply the new file
         echo "Reloading udev rules..."
         udevadm control --reload-rules
         udevadm trigger
+
+        # Reload systemd, enable and start the new service
+        if [ -d /run/systemd/system ]; then
+            echo "Enabling and starting libra service..."
+            systemctl daemon-reload
+            systemctl enable libra.service
+            systemctl start libra.service
+        fi
     ;;
 
     abort-upgrade|abort-remove|abort-deconfigure)

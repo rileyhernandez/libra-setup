@@ -1,0 +1,16 @@
+#!/bin/bash
+set -e
+
+case "$1" in
+    remove|upgrade|deconfigure)
+        # Stop service if systemd is running
+        if [ -d /run/systemd/system ]; then
+            if systemctl is-active --quiet libra.service; then
+                echo "Stopping libra service..."
+                systemctl stop libra.service
+            fi
+        fi
+    ;;
+esac
+
+exit 0
