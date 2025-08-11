@@ -16,7 +16,7 @@ case "$1" in
         # Create the data directory and set ownership
         echo "Creating data directory $DATA_DIR..."
         mkdir -p "$DATA_DIR"
-        chown "$SERVICE_USER":"$SERVICE_USER" "$DATA_DIR"
+        chown -R "$SERVICE_USER":"$SERVICE_USER" "$DATA_DIR"
 
         # Make the binary executable
         # The binary is now included in the package and placed at $INSTALL_PATH by dpkg.
