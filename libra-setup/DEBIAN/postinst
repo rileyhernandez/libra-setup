@@ -1,7 +1,6 @@
 #!/bin/bash
 set -e
 
-BINARY_URL="https://github.com/rileyhernandez/big_brother/releases/download/v0.0.4/big-brother-arm64"
 INSTALL_PATH="/usr/local/bin/big-brother"
 SERVICE_USER="libra"
 
@@ -13,15 +12,8 @@ case "$1" in
             adduser --system --no-create-home --group "$SERVICE_USER"
         fi
 
-        # Download the binary. Requires 'curl' to be installed.
-        echo "Downloading big-brother binary..."
-        if ! curl -fL --progress-bar "$BINARY_URL" -o "$INSTALL_PATH"; then
-            echo "ERROR: Failed to download binary from $BINARY_URL" >&2
-            echo "Please check your network connection and ensure 'curl' is installed." >&2
-            exit 1
-        fi
-
         # Make the binary executable
+        # The binary is now included in the package and placed at $INSTALL_PATH by dpkg.
         echo "Setting permissions for $INSTALL_PATH..."
         chmod +x "$INSTALL_PATH"
 

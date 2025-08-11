@@ -23,14 +23,16 @@ This ensures that applications can seamlessly discover and communicate with Phid
 ## Prerequisites
 
 -   A Debian-based `arm64` system (e.g., Ubuntu, Raspberry Pi OS 64-bit).
--   The `libphidget22` and `libssl-dev` packages must be available in your configured APT repositories.
+-   The `libphidget22` and `libssl3` packages must be available in your configured APT repositories.
+
+To build the package from source, you will also need `curl` and `dpkg-dev` installed.
 
 ## Building the Package
 
-To build the `.deb` package from this source directory, use the `dpkg-deb` command from the parent directory:
+To build the `.deb` package, run the `build-setup.sh` script from the project's root directory (the parent directory of `libra-setup`).
 
 ```bash
-dpkg-deb --build libra-setup
+./build.sh
 ```
 
 This will generate a `.deb` file (e.g., `libra-setup_1.0-1_arm64.deb`), ready for installation.

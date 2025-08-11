@@ -1,7 +1,6 @@
 #!/bin/bash
 set -e
 
-INSTALL_PATH="/usr/local/bin/big-brother"
 SERVICE_USER="libra"
 
 case "$1" in
@@ -14,9 +13,6 @@ case "$1" in
 
         echo "Removing symbolic link for libphidget22..."
         rm -f /usr/lib/libphidget22.so
-
-        echo "Removing big-brother binary..."
-        rm -f "$INSTALL_PATH"
 
         echo "Reloading udev rules..."
         udevadm control --reload-rules

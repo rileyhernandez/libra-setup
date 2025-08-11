@@ -10,7 +10,6 @@ User=libra
 Group=libra
 Restart=always
 RestartSec=3
-# Harden service by making the root filesystem read-only
 ProtectSystem=full
 
 [Install]
