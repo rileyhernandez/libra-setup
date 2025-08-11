@@ -11,6 +11,7 @@ Group=libra
 Restart=always
 RestartSec=3
 ProtectSystem=full
+ReadWritePaths=/var/lib/libra
 
 [Install]
 WantedBy=multi-user.target
