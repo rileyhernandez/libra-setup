@@ -10,6 +10,8 @@ PACKAGE_DIR="libra-setup"
 BINARY_URL="https://github.com/rileyhernandez/big_brother/releases/download/v0.0.4/big-brother-arm64"
 INSTALL_DIR="${PACKAGE_DIR}/usr/local/bin"
 BINARY_NAME="big-brother"
+DEBS_INSTALL_DIR="${PACKAGE_DIR}/usr/share/libra-setup/debs"
+DEB_TO_BUNDLE="libphidget22_99:1.22.20250714-1+deb12_arm64.deb"
 TARGET_BINARY_PATH="${INSTALL_DIR}/${BINARY_NAME}"
 
 # --- Build Process ---
@@ -31,6 +33,14 @@ fi
 
 echo "--- Preparing package structure ---"
 mkdir -p "${INSTALL_DIR}"
+mkdir -p "${DEBS_INSTALL_DIR}"
+
+echo "--- Bundling dependency: ${DEB_TO_BUNDLE} ---"
+if [ ! -f "${DEB_TO_BUNDLE}" ]; then
+    echo "Error: Dependency file '${DEB_TO_BUNDLE}' not found in the current directory." >&2
+    exit 1
+fi
+cp -v "${DEB_TO_BUNDLE}" "${DEBS_INSTALL_DIR}/"
 
 echo "--- Downloading big-brother binary from ${BINARY_URL} ---"
 curl -LfsS "${BINARY_URL}" -o "${TARGET_BINARY_PATH}"

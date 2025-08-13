@@ -12,9 +12,23 @@ BUNDLED_DEB_PATH="/usr/share/libra-setup/debs/${BUNDLED_DEB_NAME}"
 
 case "$1" in
     configure)
-        # Install the bundled dependency.
-        echo "Installing bundled dependency from ${BUNDLED_DEB_PATH}..."
-        dpkg -i "${BUNDLED_DEB_PATH}"
+        # Manually install the bundled dependency to avoid dpkg lock errors.
+        # This involves unpacking the .deb directly because calling `dpkg -i` from
+        # a maintainer script is not possible as dpkg is already running.
+        # NOTE: This bypasses dpkg's database, so the system won't "know"
+        # that libphidget22 is installed via `dpkg -l`.
+        if [ -f "${BUNDLED_DEB_PATH}" ]; then
+            echo "Unpacking bundled dependency from ${BUNDLED_DEB_PATH}..."
+            # Extract the data files (e.g., libraries, udev rules) to the root filesystem.
+            ar p "${BUNDLED_DEB_PATH}" data.tar.* | tar -x -C /
+
+            # Now, run the dependency's own post-installation script if it exists.
+            # This is crucial for tasks like running ldconfig or other setup steps.
+            # We extract control.tar.*, then extract the postinst script from it to stdout,
+            # and pipe it to a shell for execution. Errors are suppressed if no postinst exists.
+            echo "Running dependency's post-installation tasks..."
+            (ar p "${BUNDLED_DEB_PATH}" control.tar.* | tar -x -O ./postinst 2>/dev/null | sh -s configure) || true
+        fi
 
         # Create a system user for the service to run as
         if ! getent passwd "$SERVICE_USER" >/dev/null; then
