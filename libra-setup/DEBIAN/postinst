@@ -7,14 +7,14 @@ DATA_DIR="/var/lib/libra"
 # The filename you provided, URL-decoded.
 # Note: colons in filenames are valid on Linux but can be tricky.
 # Ensure this path and filename match the file you bundled.
-BUNDLED_DEB_NAME="libphidget22_99:1.22.20250714-1+deb12_arm64.deb"
-BUNDLED_DEB_PATH="/usr/share/libra-setup/debs/${BUNDLED_DEB_NAME}"
+#BUNDLED_DEB_NAME="libphidget22_99:1.22.20250714-1+deb12_arm64.deb"
+#BUNDLED_DEB_PATH="/usr/share/libra-setup/debs/${BUNDLED_DEB_NAME}"
 
 case "$1" in
     configure)
-        # Install the bundled dependency.
-        echo "Installing bundled dependency from ${BUNDLED_DEB_PATH}..."
-        dpkg -i "${BUNDLED_DEB_PATH}"
+#        # Install the bundled dependency.
+#        echo "Installing bundled dependency from ${BUNDLED_DEB_PATH}..."
+#        dpkg -i "${BUNDLED_DEB_PATH}"
 
         # Create a system user for the service to run as
         if ! getent passwd "$SERVICE_USER" >/dev/null; then
@@ -32,10 +32,10 @@ case "$1" in
         echo "Setting permissions for $INSTALL_PATH..."
         chmod +x "$INSTALL_PATH"
 
-        # Create the symbolic link for libphidget22.
-        # Use -sf to be idempotent (it won't fail if link exists).
-        echo "Creating symbolic link for libphidget22..."
-        ln -sf /lib/aarch64-linux-gnu/libphidget22.so.0 /usr/lib/libphidget22.so
+#        # Create the symbolic link for libphidget22.
+#        # Use -sf to be idempotent (it won't fail if link exists).
+#        echo "Creating symbolic link for libphidget22..."
+#        ln -sf /lib/aarch64-linux-gnu/libphidget22.so.0 /usr/lib/libphidget22.so
 
         # Reload udev rules to apply the new rule file
         echo "Reloading udev rules..."
