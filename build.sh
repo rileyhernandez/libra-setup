@@ -41,7 +41,7 @@ echo "--- Downloading big-brother binary from ${BIG_BROTHER_BINARY_URL} ---"
 curl -LfsS "${BIG_BROTHER_BINARY_URL}" -o "${BIG_BROTHER_TARGET_BINARY_PATH}"
 
 # sync install
-ech "--- Downloading sync binary from ${SYNC_BINARY_URL} ---"
+echo "--- Downloading sync binary from ${SYNC_BINARY_URL} ---"
 curl -LfsS "${SYNC_BINARY_URL}" -o "${SYNC_TARGET_BINARY_PATH}"
 
 echo "--- Setting binary permissions ---"
