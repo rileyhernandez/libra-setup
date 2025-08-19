@@ -9,6 +9,11 @@ case "$1" in
                 echo "Stopping libra service..."
                 systemctl stop libra.service
             fi
+
+            if systemctl is-active --quiet sync.service; then
+                echo "Stopping sync service..."
+                systemctl stop sync.service
+            fi
         fi
     ;;
 esac

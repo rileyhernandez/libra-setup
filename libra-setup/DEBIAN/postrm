@@ -9,14 +9,10 @@ case "$1" in
         if [ -d /run/systemd/system ]; then
             echo "Disabling libra service..."
             systemctl disable libra.service >/dev/null 2>&1 || true
+
+            echo "Disabling sync service..."
+            systemctl disable sync.service >/dev/null 2>&1 || true
         fi
-
-        echo "Removing symbolic link for libphidget22..."
-        rm -f /usr/lib/libphidget22.so
-
-        echo "Reloading udev rules..."
-        udevadm control --reload-rules
-        udevadm trigger
     ;;
 
     purge)

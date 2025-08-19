@@ -1,20 +1,13 @@
 #!/bin/bash
 set -e
 
-INSTALL_PATH="/usr/local/bin/big-brother"
+BIG_BROTHER_INSTALL_PATH="/usr/local/bin/big-brother"
+SYNC_INSTALL_PATH="/usr/local/bin/sync"
 SERVICE_USER="libra"
 DATA_DIR="/var/lib/libra"
-# The filename you provided, URL-decoded.
-# Note: colons in filenames are valid on Linux but can be tricky.
-# Ensure this path and filename match the file you bundled.
-#BUNDLED_DEB_NAME="libphidget22_99:1.22.20250714-1+deb12_arm64.deb"
-#BUNDLED_DEB_PATH="/usr/share/libra-setup/debs/${BUNDLED_DEB_NAME}"
 
 case "$1" in
     configure)
-#        # Install the bundled dependency.
-#        echo "Installing bundled dependency from ${BUNDLED_DEB_PATH}..."
-#        dpkg -i "${BUNDLED_DEB_PATH}"
 
         # Create a system user for the service to run as
         if ! getent passwd "$SERVICE_USER" >/dev/null; then
@@ -27,15 +20,11 @@ case "$1" in
         mkdir -p "$DATA_DIR"
         chown -R "$SERVICE_USER":"$SERVICE_USER" "$DATA_DIR"
 
-        # Make the binary executable
-        # The binary is now included in the package and placed at $INSTALL_PATH by dpkg.
-        echo "Setting permissions for $INSTALL_PATH..."
-        chmod +x "$INSTALL_PATH"
-
-#        # Create the symbolic link for libphidget22.
-#        # Use -sf to be idempotent (it won't fail if link exists).
-#        echo "Creating symbolic link for libphidget22..."
-#        ln -sf /lib/aarch64-linux-gnu/libphidget22.so.0 /usr/lib/libphidget22.so
+        # Make the binaries executable
+        # The binary is now included in the package and placed at $BIG_BROTHER_INSTALL_PATH by dpkg.
+        echo "Setting permissions for $BIG_BROTHER_INSTALL_PATH, $SYNC_INSTALL_PATH..."
+        chmod +x "$BIG_BROTHER_INSTALL_PATH"
+        chmod +x "$SYNC_INSTALL_PATH"
 
         # Reload udev rules to apply the new rule file
         echo "Reloading udev rules..."
@@ -46,8 +35,12 @@ case "$1" in
         if [ -d /run/systemd/system ]; then
             echo "Enabling and starting libra service..."
             systemctl daemon-reload
+
             systemctl enable libra.service
             systemctl start libra.service
+
+            systemctl enable sync.service
+            systemctl start sync.service
         fi
     ;;
 

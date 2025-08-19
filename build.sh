@@ -7,10 +7,13 @@ set -euo pipefail
 
 # --- Configuration ---
 PACKAGE_DIR="libra-setup"
-BINARY_URL="https://github.com/rileyhernandez/big_brother/releases/download/v0.0.4/big-brother-arm64"
+BIG_BROTHER_BINARY_URL="https://github.com/rileyhernandez/big_brother/releases/download/v0.0.4/big-brother-arm64"
+BIG_BROTHER_BINARY_NAME="big-brother"
+BIG_BROTHER_TARGET_BINARY_PATH="${INSTALL_DIR}/${BIG_BROTHER_BINARY_NAME}"
+SYNC_BINARY_URL="https://github.com/Caldo-Restaurant-Technologies/sync/releases/download/v0.0.0/sync_0.0-0_arm64"
+SYNC_BINARY_NAME="sync"
+SYNC_TARGET_BINARY_PATH="${INSTALL_DIR}/${SYNC_BINARY_NAME}"
 INSTALL_DIR="${PACKAGE_DIR}/usr/local/bin"
-BINARY_NAME="big-brother"
-TARGET_BINARY_PATH="${INSTALL_DIR}/${BINARY_NAME}"
 
 # --- Build Process ---
 
@@ -32,11 +35,18 @@ fi
 echo "--- Preparing package structure ---"
 mkdir -p "${INSTALL_DIR}"
 
-echo "--- Downloading big-brother binary from ${BINARY_URL} ---"
-curl -LfsS "${BINARY_URL}" -o "${TARGET_BINARY_PATH}"
+# big brother install
+echo "--- Downloading big-brother binary from ${BIG_BROTHER_BINARY_URL} ---"
+curl -LfsS "${BIG_BROTHER_BINARY_URL}" -o "${BIG_BROTHER_TARGET_BINARY_PATH}"
+
+# sync install
+ech "--- Downloading sync binary from ${SYNC_BINARY_URL} ---"
+curl -LfsS "${SYNC_BINARY_URL}" -o "${SYNC_TARGET_BINARY_PATH}"
 
 echo "--- Setting binary permissions ---"
-chmod +x "${TARGET_BINARY_PATH}"
+chmod +x "${BIG_BROTHER_TARGET_BINARY_PATH}"
+chmod +x "${SYNC_TARGET_BINARY_PATH}"
+
 
 echo "--- Building Debian package ---"
 dpkg-deb --build "${PACKAGE_DIR}"

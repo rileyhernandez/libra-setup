@@ -1,0 +1,17 @@
+[Unit]
+Description=Sync Process
+After=network.target
+Requires=network-online.target
+
+[Service]
+ExecStart=/usr/local/bin/sync
+Type=simple
+User=libra
+Group=libra
+Restart=always
+RestartSec=15
+ProtectSystem=full
+ReadWritePaths=/var/lib/libra
+
+[Install]
+WantedBy=multi-user.target
