@@ -6,7 +6,7 @@ set -euo pipefail
 # package structure before calling dpkg-deb.
 
 # --- Configuration ---
-PACKAGE_DIR="libra-setup
+PACKAGE_DIR="libra-setup"
 INSTALL_DIR="${PACKAGE_DIR}/usr/local/bin"
 BIG_BROTHER_BINARY_URL="https://github.com/rileyhernandez/big_brother/releases/download/v0.0.4/big-brother-arm64"
 BIG_BROTHER_BINARY_NAME="big-brother"
