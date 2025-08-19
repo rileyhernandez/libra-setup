@@ -5,7 +5,7 @@ BIG_BROTHER_INSTALL_PATH="/usr/local/bin/big-brother"
 SYNC_INSTALL_PATH="/usr/local/bin/sync"
 SERVICE_USER="libra"
 DATA_DIR="/var/lib/libra"
-ENV_DIR="/env/libra"
+ENV_DIR="/etc/libra"
 ENV_FILE="$ENV_DIR/.env"
 
 case "$1" in
