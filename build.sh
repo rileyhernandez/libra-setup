@@ -6,14 +6,15 @@ set -euo pipefail
 # package structure before calling dpkg-deb.
 
 # --- Configuration ---
-PACKAGE_DIR="libra-setup"
+PACKAGE_DIR="libra-setup
+INSTALL_DIR="${PACKAGE_DIR}/usr/local/bin"
 BIG_BROTHER_BINARY_URL="https://github.com/rileyhernandez/big_brother/releases/download/v0.0.4/big-brother-arm64"
 BIG_BROTHER_BINARY_NAME="big-brother"
 BIG_BROTHER_TARGET_BINARY_PATH="${INSTALL_DIR}/${BIG_BROTHER_BINARY_NAME}"
 SYNC_BINARY_URL="https://github.com/Caldo-Restaurant-Technologies/sync/releases/download/v0.0.0/sync_0.0-0_arm64"
 SYNC_BINARY_NAME="sync"
 SYNC_TARGET_BINARY_PATH="${INSTALL_DIR}/${SYNC_BINARY_NAME}"
-INSTALL_DIR="${PACKAGE_DIR}/usr/local/bin"
+
 
 # --- Build Process ---
 
