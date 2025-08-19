@@ -12,6 +12,7 @@ Restart=always
 RestartSec=15
 ProtectSystem=full
 ReadWritePaths=/var/lib/libra
+EnvironmentFile=/env/libra/.env
 
 [Install]
 WantedBy=multi-user.target

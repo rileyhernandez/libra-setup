@@ -5,6 +5,8 @@ BIG_BROTHER_INSTALL_PATH="/usr/local/bin/big-brother"
 SYNC_INSTALL_PATH="/usr/local/bin/sync"
 SERVICE_USER="libra"
 DATA_DIR="/var/lib/libra"
+ENV_DIR="/env/libra"
+ENV_FILE="$ENV_DIR/.env"
 
 case "$1" in
     configure)
@@ -20,8 +22,24 @@ case "$1" in
         mkdir -p "$DATA_DIR"
         chown -R "$SERVICE_USER":"$SERVICE_USER" "$DATA_DIR"
 
+        # Create the environment directory and file
+        echo "Creating environment directory $ENV_DIR..."
+        mkdir -p "$ENV_DIR"
+
+        # Create the .env file if it doesn't exist
+        if [ ! -f "$ENV_FILE" ]; then
+            echo "Creating environment file $ENV_FILE..."
+            touch "$ENV_FILE"
+            # You can add default environment variables here if needed
+            # echo "# Environment variables for libra services" > "$ENV_FILE"
+            # echo "LOG_LEVEL=info" >> "$ENV_FILE"
+        fi
+
+        # Set proper ownership and permissions for the environment file
+        chown "$SERVICE_USER":"$SERVICE_USER" "$ENV_FILE"
+        chmod 600 "$ENV_FILE"  # Only readable by owner
+
         # Make the binaries executable
-        # The binary is now included in the package and placed at $BIG_BROTHER_INSTALL_PATH by dpkg.
         echo "Setting permissions for $BIG_BROTHER_INSTALL_PATH, $SYNC_INSTALL_PATH..."
         chmod +x "$BIG_BROTHER_INSTALL_PATH"
         chmod +x "$SYNC_INSTALL_PATH"
