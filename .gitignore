@@ -1,1 +1,4 @@
 libra-setup.deb
+# don't think we need these anymore?
+libra-setup/etc/udev
+libra-setup/usr

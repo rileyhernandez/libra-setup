@@ -30,9 +30,6 @@ case "$1" in
         if [ ! -f "$ENV_FILE" ]; then
             echo "Creating environment file $ENV_FILE..."
             touch "$ENV_FILE"
-            # You can add default environment variables here if needed
-            # echo "# Environment variables for libra services" > "$ENV_FILE"
-            # echo "LOG_LEVEL=info" >> "$ENV_FILE"
         fi
 
         # Set proper ownership and permissions for the environment file
