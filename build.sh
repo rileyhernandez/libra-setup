@@ -1,10 +1,6 @@
 #!/bin/bash
 set -euo pipefail
 
-# This script automates the process of building the libra-setup Debian package.
-# It downloads the required 'big-brother' binary and places it into the
-# package structure before calling dpkg-deb.
-
 # Source environment variables from .env file if it exists
 if [ -f .env ]; then
   echo "--- Sourcing environment variables from .env file ---"
@@ -23,7 +19,7 @@ if [ -z "${GITHUB_TOKEN:-}" ]; then
 fi
 
 # Check for other required environment variables
-REQUIRED_VARS=( "SYNC_REPO" "SYNC_VERSION" "SYNC_ASSET_NAME" "BIG_BROTHER_BINARY_URL" )
+REQUIRED_VARS=( "SYNC_REPO" "SYNC_VERSION" "SYNC_ASSET_NAME" "BIG_BROTHER_BINARY_URL" "UPDATE_REPO" "UPDATE_VERSION" "UPDATE_ASSET_NAME" )
 for var in "${REQUIRED_VARS[@]}"; do
     if [ -z "${!var:-}" ]; then
         echo "Error: Environment variable ${var} is not set." >&2
@@ -32,15 +28,26 @@ for var in "${REQUIRED_VARS[@]}"; do
     fi
 done
 
-# --- Github Asset Identification for 'sync' binary ---
+# --- Github Asset Identification for 'sync' and 'libra-update' binaries ---
 # Get asset ID dynamically from the private repo
-ASSET_ID=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
+SYNC_ASSET_ID=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
   "https://api.github.com/repos/${SYNC_REPO}/releases/tags/${SYNC_VERSION}" | \
   jq -r ".assets[] | select(.name==\"${SYNC_ASSET_NAME}\") | .id")
 
-if [[ -z "${ASSET_ID}" || "${ASSET_ID}" == "null" ]]; then
+if [[ -z "${SYNC_ASSET_ID}" || "${SYNC_ASSET_ID}" == "null" ]]; then
   echo "Error: Could not find asset ID for '${SYNC_ASSET_NAME}' in release '${SYNC_VERSION}' of repo '${SYNC_REPO}'." >&2
   echo "Please check the SYNC_REPO, SYNC_VERSION, and SYNC_ASSET_NAME variables in your environment, and ensure the release and asset exist." >&2
+  exit 1
+fi
+
+# Get asset ID dynamically from the private repo
+UPDATE_ASSET_ID=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
+  "https://api.github.com/repos/${UPDATE_REPO}/releases/tags/${UPDATE_VERSION}" | \
+  jq -r ".assets[] | select(.name==\"${UPDATE_ASSET_NAME}\") | .id")
+
+if [[ -z "${UPDATE_ASSET_ID}" || "${UPDATE_ASSET_ID}" == "null" ]]; then
+  echo "Error: Could not find asset ID for '${UDPATE_ASSET_NAME}' in release '${UPDATE_VERSION}' of repo '${UPDATE_REPO}'." >&2
+  echo "Please check the UPDATE_REPO, UPDATE_VERSION, and UPDATE_ASSET_NAME variables in your environment, and ensure the release and asset exist." >&2
   exit 1
 fi
 
@@ -50,9 +57,12 @@ OUTPUT_DIR="output"
 INSTALL_DIR="${PACKAGE_DIR}/usr/local/bin"
 BIG_BROTHER_BINARY_NAME="big-brother"
 BIG_BROTHER_TARGET_BINARY_PATH="${INSTALL_DIR}/${BIG_BROTHER_BINARY_NAME}"
-SYNC_BINARY_URL="https://api.github.com/repos/${SYNC_REPO}/releases/assets/${ASSET_ID}"
+SYNC_BINARY_URL="https://api.github.com/repos/${SYNC_REPO}/releases/assets/${SYNC_ASSET_ID}"
 SYNC_BINARY_NAME="sync"
 SYNC_TARGET_BINARY_PATH="${INSTALL_DIR}/${SYNC_BINARY_NAME}"
+UPDATE_BINARY_URL="https://api.github.com/repos/${UPDATE_REPO}/releases/assets/${UPDATE_ASSET_ID}"
+UPDATE_BINARY_NAME="libra-update"
+UPDATE_TARGET_BINARY_PATH="${INSTALL_DIR}/${UPDATE_BINARY_NAME}"
 
 
 # --- Build Process ---
@@ -85,9 +95,15 @@ echo "--- Downloading sync binary from ${SYNC_BINARY_URL} ---"
 curl -LfsS -H "Authorization: token $GITHUB_TOKEN" -H "Accept: application/octet-stream" \
   "${SYNC_BINARY_URL}" -o "${SYNC_TARGET_BINARY_PATH}"
 
+# update install
+echo "--- Downloading libra-update binary from ${UPDATE_BINARY_URL} ---"
+curl -LfsS -H "Authorization: token $GITHUB_TOKEN" -H "Accept: application/octet-stream" \
+  "${UPDATE_BINARY_URL}" -o "${UPDATE_TARGET_BINARY_PATH}"
+
 echo "--- Setting binary permissions ---"
 chmod +x "${BIG_BROTHER_TARGET_BINARY_PATH}"
 chmod +x "${SYNC_TARGET_BINARY_PATH}"
+chmod +x "${UPDATE_TARGET_BINARY_PATH}"
 
 
 echo "--- Building Debian package ---"

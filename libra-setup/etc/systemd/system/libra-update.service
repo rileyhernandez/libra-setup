@@ -1,0 +1,17 @@
+[Unit]
+Description=Libra Update Process
+After=network.target
+Requires=network-online.target
+
+[Service]
+ExecStart=/usr/local/bin/libra-update
+Type=oneshot
+User=libra
+Group=libra
+RemainAfterExit=yes
+ProtectSystem=full
+ReadWritePaths=/etc/libra
+EnvironmentFile=/etc/libra/.env
+
+[Install]
+WantedBy=multi-user.target

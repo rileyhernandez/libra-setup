@@ -2,3 +2,4 @@ output/
 libra-setup/etc/udev/
 libra-setup/usr/
 .env
+.idea/

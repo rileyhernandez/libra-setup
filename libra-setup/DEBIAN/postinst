@@ -3,6 +3,7 @@ set -e
 
 BIG_BROTHER_INSTALL_PATH="/usr/local/bin/big-brother"
 SYNC_INSTALL_PATH="/usr/local/bin/sync"
+UPDATE_INSTALL_PATH="/usr/local/bin/libra-update"
 SERVICE_USER="libra"
 DATA_DIR="/var/lib/libra"
 ENV_DIR="/etc/libra"
@@ -40,6 +41,7 @@ case "$1" in
         echo "Setting permissions for $BIG_BROTHER_INSTALL_PATH, $SYNC_INSTALL_PATH..."
         chmod +x "$BIG_BROTHER_INSTALL_PATH"
         chmod +x "$SYNC_INSTALL_PATH"
+        chmod +x "$UPDATE_INSTALL_PATH"
 
         # Reload udev rules to apply the new rule file
         echo "Reloading udev rules..."
@@ -50,6 +52,9 @@ case "$1" in
         if [ -d /run/systemd/system ]; then
             echo "Enabling and starting libra service..."
             systemctl daemon-reload
+
+            systemctl enable libra-update.service
+            systemctl start libra-update.service
 
             systemctl enable libra.service
             systemctl start libra.service

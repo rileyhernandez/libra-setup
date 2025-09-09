@@ -1,7 +1,7 @@
 [Unit]
 Description=Libra Process
-After=network.target
-Requires=network-online.target
+After=libra-update.service
+Wants=libra-update.service
 
 [Service]
 ExecStart=/usr/local/bin/big-brother
