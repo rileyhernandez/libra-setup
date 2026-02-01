@@ -4,7 +4,7 @@ After=libra-update.service
 Wants=libra-update.service
 
 [Service]
-ExecStart=/usr/local/bin/big-brother
+ExecStart=/usr/local/bin/libra-inventory
 Type=simple
 User=libra
 Group=libra

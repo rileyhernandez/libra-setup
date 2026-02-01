@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-BIG_BROTHER_INSTALL_PATH="/usr/local/bin/big-brother"
+LIBRA_INVENTORY_INSTALL_PATH="/usr/local/bin/libra-inventory"
 SYNC_INSTALL_PATH="/usr/local/bin/sync"
 UPDATE_INSTALL_PATH="/usr/local/bin/libra-update"
 SERVICE_USER="libra"
@@ -38,8 +38,8 @@ case "$1" in
         chmod 600 "$ENV_FILE"  # Only readable by owner
 
         # Make the binaries executable
-        echo "Setting permissions for $BIG_BROTHER_INSTALL_PATH, $SYNC_INSTALL_PATH..."
-        chmod +x "$BIG_BROTHER_INSTALL_PATH"
+        echo "Setting permissions for $LIBRA_INVENTORY_INSTALL_PATH, $SYNC_INSTALL_PATH..."
+        chmod +x "$LIBRA_INVENTORY_INSTALL_PATH"
         chmod +x "$SYNC_INSTALL_PATH"
         chmod +x "$UPDATE_INSTALL_PATH"
 

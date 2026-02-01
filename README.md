@@ -79,7 +79,7 @@ The service is configured to run an application from a fixed path and restart it
 
 ```
 [Service]
-ExecStart=/home/pi-zero/big_brother/target/release/big-brother
+ExecStart=/home/pi-zero/libra-inventory/target/release/libra-inventory
 Restart=always
 ```
 

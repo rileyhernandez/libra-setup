@@ -6,6 +6,6 @@ Section: misc
 Priority: optional
 Depends: libssl3
 Description: Installs the Libra service (big-brother).
- This package installs the big-brother binary and configures it to run
+ This package installs the libra-inventory binary and configures it to run
  as a systemd service. It also creates a dedicated system user and sets
  up udev rules required for Phidgets USB devices.

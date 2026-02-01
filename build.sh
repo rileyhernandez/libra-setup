@@ -19,7 +19,7 @@ if [ -z "${GITHUB_TOKEN:-}" ]; then
 fi
 
 # Check for other required environment variables
-REQUIRED_VARS=( "SYNC_REPO" "SYNC_VERSION" "SYNC_ASSET_NAME" "BIG_BROTHER_BINARY_URL" "UPDATE_REPO" "UPDATE_VERSION" "UPDATE_ASSET_NAME" )
+REQUIRED_VARS=( "SYNC_REPO" "SYNC_VERSION" "SYNC_ASSET_NAME" "LIBRA_INVENTORY_BINARY_URL" "UPDATE_REPO" "UPDATE_VERSION" "UPDATE_ASSET_NAME" )
 for var in "${REQUIRED_VARS[@]}"; do
     if [ -z "${!var:-}" ]; then
         echo "Error: Environment variable ${var} is not set." >&2
@@ -55,8 +55,8 @@ fi
 PACKAGE_DIR="libra-setup"
 OUTPUT_DIR="output"
 INSTALL_DIR="${PACKAGE_DIR}/usr/local/bin"
-BIG_BROTHER_BINARY_NAME="big-brother"
-BIG_BROTHER_TARGET_BINARY_PATH="${INSTALL_DIR}/${BIG_BROTHER_BINARY_NAME}"
+LIBRA_INVENTORY_BINARY_NAME="libra-inventory"
+LIBRA_INVENTORY_TARGET_BINARY_PATH="${INSTALL_DIR}/${LIBRA_INVENTORY_BINARY_NAME}"
 SYNC_BINARY_URL="https://api.github.com/repos/${SYNC_REPO}/releases/assets/${SYNC_ASSET_ID}"
 SYNC_BINARY_NAME="sync"
 SYNC_TARGET_BINARY_PATH="${INSTALL_DIR}/${SYNC_BINARY_NAME}"
@@ -86,9 +86,9 @@ echo "--- Preparing package structure ---"
 mkdir -p "${INSTALL_DIR}"
 mkdir -p "${OUTPUT_DIR}"
 
-# big brother install
-echo "--- Downloading big-brother binary from ${BIG_BROTHER_BINARY_URL} ---"
-curl -LfsS "${BIG_BROTHER_BINARY_URL}" -o "${BIG_BROTHER_TARGET_BINARY_PATH}"
+# libra inventory install
+echo "--- Downloading libra-inventory binary from ${LIBRA_INVENTORY_BINARY_URL} ---"
+curl -LfsS "${LIBRA_INVENTORY_BINARY_URL}" -o "${LIBRA_INVENTORY_TARGET_BINARY_PATH}"
 
 # sync install
 echo "--- Downloading sync binary from ${SYNC_BINARY_URL} ---"
@@ -101,7 +101,7 @@ curl -LfsS -H "Authorization: token $GITHUB_TOKEN" -H "Accept: application/octet
   "${UPDATE_BINARY_URL}" -o "${UPDATE_TARGET_BINARY_PATH}"
 
 echo "--- Setting binary permissions ---"
-chmod +x "${BIG_BROTHER_TARGET_BINARY_PATH}"
+chmod +x "${LIBRA_INVENTORY_TARGET_BINARY_PATH}"
 chmod +x "${SYNC_TARGET_BINARY_PATH}"
 chmod +x "${UPDATE_TARGET_BINARY_PATH}"
 
